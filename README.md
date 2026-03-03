@@ -11,3 +11,21 @@ Original (now deprecated) : https://formulae.brew.sh/cask/distroav#default
 
 Code : https://github.com/Homebrew/homebrew-cask/blob/444ce69b6efe57566a073d16e62f5ae50994ac9e/Casks/d/distroav.rb
 
+Widely inspired by the cod eon OBS repo (thanks!)
+
+
+# Formulas
+For now there is only one formula `distroav`. but if we keep running into challenge on the long run, we could add some of the dependencies here too.
+
+## How do I install this formula?
+`brew install distroav/tools/<formula>`
+
+Or `brew tap distroav/distroav` and then `brew install <formula>`.
+
+
+## Documentation
+`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
+
+## Contributing
+
+[![Latest Pull Request](https://github.com/distroav/homebrew-distroav/workflows/brew%20pr-pull/badge.svg)](https://github.com/distroav/homebrew-distroav/actions?query=workflow%3Abrew%20pr-pull)
