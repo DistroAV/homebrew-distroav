@@ -1,0 +1,38 @@
+name: Update Cask
+on:
+  repository_dispatch:
+    types:
+      - update-cask
+
+jobs:
+  update-cask:
+    name: Update Cask 🍺
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Cask Version and SHA256 🔄
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+          SHA256: ${{ github.event.client_payload.sha256 }}
+        run: |
+          : Update Cask Version and SHA256 🔄
+          set -euo pipefail
+
+          sed -i "s/version \".*\"/version \"${VERSION}\"/" Casks/distroav.rb
+          sed -i "s/sha256 \".*\"/sha256 \"${SHA256}\"/" Casks/distroav.rb
+
+      - name: Commit and Push Changes 📤
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          : Commit and Push Changes 📤
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/distroav.rb
+          git commit -m "chore: update distroav cask to ${VERSION}"
+          git push
