@@ -1,3 +1,6 @@
+## WORK IN PROGRESS
+This is not yet ready to be used :)
+
 ## About
 This Homebrew tap provides the [DistroAV](https://distroav.org) tap. The cask is updated when a new release is published.
 
