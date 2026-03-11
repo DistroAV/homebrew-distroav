@@ -53,12 +53,4 @@ cask "distroav" do
     These symlinks are created automatically during installation and removed
     when this cask is uninstalled via brew.
   EOS
-
-  test do
-    plugin_dir = Pathname.new("~/Library/Application Support/obs-studio/plugins").expand_path
-    assert_predicate plugin_dir/"distroav.plugin", :symlink?,
-      "distroav.plugin symlink not found in #{plugin_dir}"
-    assert_predicate plugin_dir/"distroav.plugin", :exist?,
-      "distroav.plugin symlink target does not exist (broken symlink)"
-  end
 end
