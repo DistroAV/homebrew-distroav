@@ -1,0 +1,64 @@
+# Documentation: https://docs.brew.sh/Cask-Cookbook
+#                https://docs.brew.sh/rubydoc/Cask/Cask
+cask "distroav" do
+  version "6.1.1"
+  sha256 "119e88377a3920216ac2f9e29b174d45c43f855baed14c7b282e35378c0e06d3"
+
+  url "https://github.com/DistroAV/DistroAV/releases/download/#{version}/distroav-#{version}-macos-universal.pkg",
+      verified: "github.com/DistroAV/DistroAV/"
+  name "DistroAV"
+  desc "NDI integration for OBS Studio"
+  homepage "https://distroav.org"
+
+  # Requires libndi
+  depends_on cask: "libndi"
+  # look to have version requirement
+  # libndi cask does not manage the versioning yet (Q12026)
+
+  pkg "distroav-#{version}-macos-universal.pkg"
+
+  # The pkg installs the plugin files to /Library/Application Support/obs-studio/plugins
+  # however OBS Studio expects them to be in ~/Library/Application Support/obs-studio/plugins
+  # so we create symlinks to link the plugin files for OBS Studio.
+  postflight do
+    puts "Creating #{token} symlinks in ~/Library/Application Support/obs-studio/plugins"
+    target = Pathname.new("~/Library/Application Support/obs-studio/plugins").expand_path
+    source = "/Library/Application Support/obs-studio/plugins"
+
+    FileUtils.mkdir_p target
+    FileUtils.ln_sf "#{source}/distroav.plugin", "#{target}/distroav.plugin"
+    FileUtils.ln_sf "#{source}/distroav.plugin.dSYM", "#{target}/distroav.plugin.dSYM"
+  end
+
+  uninstall_preflight do
+    puts "Removing #{token} symlinks from ~/Library/Application Support/obs-studio/plugins"
+    target = Pathname.new("~/Library/Application Support/obs-studio/plugins").expand_path
+
+    if File.symlink?("#{target}/distroav.plugin")
+      File.unlink("#{target}/distroav.plugin")
+      File.unlink("#{target}/distroav.plugin.dSYM")
+    end
+  end
+
+  uninstall pkgutil: "org.distroav.distroav"
+
+  caveats <<~EOS
+    DistroAV is installed machine-wide by the pkg installer:
+      /Library/Application Support/obs-studio/plugins/
+
+    To make the plugin available to OBS Studio, symlinks are created in your
+    user OBS plugins directory:
+      ~/Library/Application Support/obs-studio/plugins/
+
+    These symlinks are created automatically during installation and removed
+    when this cask is uninstalled via brew.
+  EOS
+
+  test do
+    plugin_dir = Pathname.new("~/Library/Application Support/obs-studio/plugins").expand_path
+    assert_predicate plugin_dir/"distroav.plugin", :symlink?,
+      "distroav.plugin symlink not found in #{plugin_dir}"
+    assert_predicate plugin_dir/"distroav.plugin", :exist?,
+      "distroav.plugin symlink target does not exist (broken symlink)"
+  end
+end
