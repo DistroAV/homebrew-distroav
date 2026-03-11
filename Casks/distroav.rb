@@ -37,7 +37,7 @@ cask "distroav" do
       # File.symlink("#{source}/#{entry}", destination)
 
       # More aggressive option, to allow update via brew event if the plugin was manually installed.
-      FileUtils.rm_rf(destination) if destination.exist?
+      FileUtils.rm_r(destination) if destination.exist?
       FileUtils.ln_sf "#{source}/#{entry}", destination
     end
   end
