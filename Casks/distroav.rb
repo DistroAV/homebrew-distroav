@@ -8,11 +8,10 @@ cask "distroav" do
       verified: "github.com/DistroAV/DistroAV/"
   name "DistroAV"
   desc "NDI integration for OBS Studio"
-  homepage "https://distroav.org"
+  homepage "https://distroav.org/"
 
-  # Requires libndi
   depends_on cask: "libndi"
-  # look to have version requirement
+
   # libndi cask does not manage the versioning yet (Q12026)
 
   pkg "distroav-#{version}-macos-universal.pkg"
