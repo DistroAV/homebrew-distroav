@@ -25,17 +25,31 @@ cask "distroav" do
     source = "/Library/Application Support/obs-studio/plugins"
 
     FileUtils.mkdir_p target
-    FileUtils.ln_sf "#{source}/distroav.plugin", "#{target}/distroav.plugin"
-    FileUtils.ln_sf "#{source}/distroav.plugin.dSYM", "#{target}/distroav.plugin.dSYM"
+
+    File.symlink("#{source}/distroav.plugin", "#{target}/distroav.plugin")
+    File.symlink("#{source}/distroav.plugin.dSYM", "#{target}/distroav.plugin.dSYM")
+
+    ["distroav.plugin", "distroav.plugin.dSYM"].each do |entry|
+      destination = target/entry
+      # Soft option, will not override manually installed plugin, but will update symlink if it exists.
+      # Remove existing symlink before creating a new one to ensure it points to the correct source path.
+      # File.unlink(destination) if destination.exist? || destination.symlink?
+      # File.symlink("#{source}/#{entry}", destination)
+
+      # More aggressive option, to allow update via brew event if the plugin was manually installed.
+      FileUtils.rm_r(destination) if destination.exist?
+      FileUtils.ln_sf "#{source}/#{entry}", destination
+    end
   end
 
   uninstall_preflight do
     puts "Removing #{token} symlinks from ~/Library/Application Support/obs-studio/plugins"
     target = Pathname.new("~/Library/Application Support/obs-studio/plugins").expand_path
 
-    if File.symlink?("#{target}/distroav.plugin")
-      File.unlink("#{target}/distroav.plugin")
-      File.unlink("#{target}/distroav.plugin.dSYM")
+    ["distroav.plugin", "distroav.plugin.dSYM"].each do |entry|
+      destination = target/entry
+      # Only uninstall if plugin was installed by brew, do not remove manually installed plugin.
+      File.unlink(destination) if destination.symlink?
     end
   end
 
