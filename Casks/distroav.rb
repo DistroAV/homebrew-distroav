@@ -26,17 +26,9 @@ cask "distroav" do
 
     FileUtils.mkdir_p target
 
-    File.symlink("#{source}/distroav.plugin", "#{target}/distroav.plugin")
-    File.symlink("#{source}/distroav.plugin.dSYM", "#{target}/distroav.plugin.dSYM")
-
     ["distroav.plugin", "distroav.plugin.dSYM"].each do |entry|
       destination = target/entry
-      # Soft option, will not override manually installed plugin, but will update symlink if it exists.
-      # Remove existing symlink before creating a new one to ensure it points to the correct source path.
-      # File.unlink(destination) if destination.exist? || destination.symlink?
-      # File.symlink("#{source}/#{entry}", destination)
-
-      # More aggressive option, to allow update via brew event if the plugin was manually installed.
+      # Allow update via brew even if the plugin was manually installed.
       FileUtils.rm_r(destination) if destination.exist?
       FileUtils.ln_sf "#{source}/#{entry}", destination
     end
