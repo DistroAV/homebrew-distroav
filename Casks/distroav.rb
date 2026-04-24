@@ -1,8 +1,8 @@
 # Documentation: https://docs.brew.sh/Cask-Cookbook
 #                https://docs.brew.sh/rubydoc/Cask/Cask
 cask "distroav" do
-  version "6.2.0"
-  sha256 "7ccc29495352928859bd9bb76e922fe02048f576b15722669673f933888f068e"
+  version "6.2.1"
+  sha256 "2f93e9d7de94f06c5eb36107c7451805ed41b55d32455c0e844215085490e50c"
 
   url "https://github.com/DistroAV/DistroAV/releases/download/#{version}/distroav-#{version}-macos-universal.pkg",
       verified: "github.com/DistroAV/DistroAV/"
